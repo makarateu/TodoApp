@@ -1,4 +1,9 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ToDoApp
+Nextjs and Firebase
+
+Required: 
+--> Create a copy of the .env.example file and rename it .env.local
+--> Fill in the all the Firebase configuration credentials
 
 ## Getting Started
 

@@ -4,11 +4,11 @@ import Todo from './Todo';
 import { GET } from '@/app/api/todo/route';
 
 interface TodoListProps {
-    // todos: Todos[]
+    todos: Todos[]
 }
 
-const TodoList: React.FC<TodoListProps> = async({})  =>  {
-    const todos: Todos[] = await GET();
+const TodoList: React.FC<TodoListProps> = ({todos})  =>  {
+
     return (
         <div className="overflow-x-auto">
             <table className="table">

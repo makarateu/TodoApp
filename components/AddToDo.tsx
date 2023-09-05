@@ -5,9 +5,12 @@ import { useRouter } from 'next/navigation';
 import { Todos } from '@/app/lib/todo';
 import { GET } from '@/app/api/todo/route';
 
-const AddToDo = () => {
+interface TodoListProps {
+    todos: Todos[]
+}
+
+const AddToDo: React.FC<TodoListProps> = ({todos})  =>  {
     const router = useRouter();
-    // const todos: Todos[] = GET();
 
     const [todoText, setTodoText] = useState('');
     const [error, setError] = useState('');
@@ -23,11 +26,18 @@ const AddToDo = () => {
                 setError('Invalid Todo!');
                 setTimeout(() => setError(''), 2000);
             } else {
-                setTodoText('');
-                await POST(todoText);
-                router.refresh();
-                setAddSuccess(true);
-                setTimeout(() => setAddSuccess(false), 2000);
+                //make sure the todo is unique
+                const isDuplicate = todos.some((todo) => todo.todo === todoText);
+                if (isDuplicate) {
+                    setError('Duplicate Todo!');
+                    setTimeout(() => setError(''), 2000);
+                } else {
+                    setTodoText('');
+                    await POST(todoText);
+                    router.refresh();
+                    setAddSuccess(true);
+                    setTimeout(() => setAddSuccess(false), 2000);
+                }
             }
         }
     };

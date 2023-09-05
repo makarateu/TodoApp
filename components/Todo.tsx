@@ -1,20 +1,23 @@
 "use client";
-import { Todos } from '@/app/lib/todo'
+import { TodoModel } from '@/app/lib/todo'
 import React, { useState } from 'react'
 import {VscTrash, VscEdit} from 'react-icons/vsc'
-import { DELETE, PUT } from '@/app/api/todo/[id]/route'
+import { DELETE, PUT} from '@/app/api/todo/[id]/route'
+import { GET } from '@/app/api/todo/route'
 import { useRouter } from 'next/navigation';
 
 interface TodoProps {
-    todo: Todos
+    todo: TodoModel
 }
 
-const Todo: React.FC<TodoProps> = ({todo}) => {
+const Todo: React.FC<TodoProps> = async ({todo}) => {
+    const todos = await GET();
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [editSuccess, setEditSuccess] = useState(false);
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
     const [todoText, setTodoText] = useState(todo.todo);
+    const [error, setError] = useState('');
 
     const onDelete = async (id: any) => {
         await DELETE(id);
@@ -31,7 +34,6 @@ const Todo: React.FC<TodoProps> = ({todo}) => {
     }
 
     const handleInputChange = (e: any) => {
-
         setTodoText(e.target.value);
     };
 
@@ -41,11 +43,17 @@ const Todo: React.FC<TodoProps> = ({todo}) => {
 
     const onSaveTodo = async (e: any) => {
         if (e.key === 'Enter') {
-            await PUT(todo.id, null, todoText);
-            router.refresh();
-            setIsEditing(false);
-            setEditSuccess(true);
-            setTimeout(() => setEditSuccess(false), 2000);
+            const isDuplicate = todos.some((todo) => todo.todo === todoText);
+            if (isDuplicate) {
+                setError('Duplicate Todo!');
+                setTimeout(() => setError(''), 2000);
+            } else {
+                await PUT(todo.id, null, todoText);
+                router.refresh();
+                setIsEditing(false);
+                setEditSuccess(true);
+                setTimeout(() => setEditSuccess(false), 2000);
+            }
         }
         if (e.key === 'Escape') {
             setIsEditing(false);
@@ -99,6 +107,14 @@ const Todo: React.FC<TodoProps> = ({todo}) => {
                 <div className="toast toast-top toast-end">
                     <div className="alert alert-success">
                         Todo edited!
+                    </div>
+                </div>
+            }
+
+            {error &&
+                <div className="toast toast-top toast-end">
+                    <div className="alert alert-error">
+                        Duplicate todo!
                     </div>
                 </div>
             }

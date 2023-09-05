@@ -1,23 +1,24 @@
-import { Todos } from '@/app/lib/todo';
-import { firebaseApp, firestoreDb } from '@/firebase/clientApp';
-import { collection, doc, setDoc, getDocs, query, where, deleteDoc } from "firebase/firestore";
+import { TodoModel } from '@/app/lib/todo';
+import { firestoreDb } from '@/firebase/clientApp';
+import { collection, doc, setDoc, getDocs } from "firebase/firestore";
 import { NextResponse } from 'next/server';
 
-export const  GET = async (): Promise<Todos[]>  =>   {
-    const allTodos : Todos[] = [];
+export const  GET = async (): Promise<TodoModel[]>  =>   {
+    const allTodos : TodoModel[] = [];
     const querySnapshot = await getDocs(collection(firestoreDb, "todo"));
     querySnapshot.forEach((doc) => {
-        const todoItem : Todos = {
+        const todoItem : TodoModel = {
             id: doc.data().id,
             todo: doc.data().todo,
             isCompleted: doc.data().isCompleted,
-            createdAt: doc.data().createdAt.toString(),
+            createdAt: doc.data().createdAt.toDate(),
         }
         allTodos.push(todoItem);
     });
     return allTodos;
 }
 
+//Method: POST; Endpoint: /api/todo
 export const POST = async (todo: any): Promise<any> => {
     try {
         const id = Date.now().toString();

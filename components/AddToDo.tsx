@@ -2,26 +2,36 @@
 import React, { useState } from 'react'
 import { POST } from '@/app/api/todo/route';
 import { useRouter } from 'next/navigation';
-import { Todos } from '@/app/lib/todo';
-import { GET } from '@/app/api/todo/route';
+import { TodoModel } from '@/app/lib/todo';
 
 interface TodoListProps {
-    todos: Todos[]
+    todos: TodoModel[]
+    onInputChange: (todoText: string, isSearching: boolean) => void
 }
 
-const AddToDo: React.FC<TodoListProps> = ({todos})  =>  {
+const AddToDo: React.FC<TodoListProps> = ({todos, onInputChange})  =>  {
     const router = useRouter();
 
     const [todoText, setTodoText] = useState('');
     const [error, setError] = useState('');
     const [addSuccess, setAddSuccess] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
 
     const handleInputChange = (e: any) => {
-        setTodoText(e.target.value);
+        const newText = e.target.value;
+        setTodoText(newText);
+        if(newText.length > 1){
+            setIsSearching(true);
+        } else {
+            setIsSearching(false);
+        }
+        onInputChange(newText, isSearching);
     };
 
     const handleSubmit = async(e: any) => {
         if (e.key === 'Enter') {
+            setIsSearching(false);
+            onInputChange("", isSearching);
             if (todoText.trim() === '') {
                 setError('Invalid Todo!');
                 setTimeout(() => setError(''), 2000);
@@ -72,7 +82,6 @@ const AddToDo: React.FC<TodoListProps> = ({todos})  =>  {
                     </div>
                 </div>
             }
-
         </div>
     )
 }

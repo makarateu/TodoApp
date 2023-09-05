@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Todos } from '@/app/lib/todo';
+import React from 'react';
+import { TodoModel } from '@/app/lib/todo';
 import Todo from './Todo';
-import { GET } from '@/app/api/todo/route';
 
 interface TodoListProps {
-    todos: Todos[]
+    todos: TodoModel[]
 }
 
 const TodoList: React.FC<TodoListProps> = ({todos})  =>  {
+    //sort todos by createdAt and isCompleted
+    const sortedTodos = [...todos].sort((a, b) => b.createdAt - a.createdAt);
+    const incompleteTodos = sortedTodos.filter(todo => !todo.isCompleted);
+    const completedTodos = sortedTodos.filter(todo => todo.isCompleted);
+    const finalTodos = [...incompleteTodos, ...completedTodos];
 
     return (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto mb-10">
             <table className="table">
                 {/* head */}
                 <thead>
                     <tr>
-                        <th className='w-3/4'>ToDO</th>
+                        <th className='w-3/4 font'>ToDO</th>
                         <th>Is Completed</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {todos.map(todo =>( 
+                    {finalTodos.map(todo =>(
                         <Todo key={todo.id} todo={todo} />
                     ))}
                 </tbody>
             </table>
+            {todos.length == 0 &&
+                <h2 className='text-center mt-10'>No todo. Create a new todo instead!</h2>
+            }
         </div>
     )
 }

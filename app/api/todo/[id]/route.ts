@@ -1,7 +1,8 @@
-import { firebaseApp, firestoreDb } from '@/firebase/clientApp';
-import { collection, doc, query, where, getDocs, deleteDoc, updateDoc} from "firebase/firestore";
+import { firestoreDb } from '@/firebase/clientApp';
+import { collection, query, where, getDocs, deleteDoc, updateDoc} from "firebase/firestore";
 import { NextResponse } from 'next/server';
 
+//Method: DELETE; Endpoint: /api/todo/{id}
 export const DELETE = async (id: any): Promise<any> => {
     try {
         const q = query(collection(firestoreDb, "todo"), where("id", "==", id));
@@ -18,9 +19,9 @@ export const DELETE = async (id: any): Promise<any> => {
     }
 };
 
+//Method: PUT; Endpoint: /api/todo/{id}
 export const PUT = async (id: any, isCompleted: boolean | null = null, todoText: any | null = null): Promise<any> => {
     try {
-        // Reference the todo document by its ID
         const q = query(collection(firestoreDb, "todo"), where("id", "==", id));
         const querySnapshot = await getDocs(q);
         const docRef = querySnapshot.docs[0].ref;

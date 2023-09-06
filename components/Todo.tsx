@@ -8,10 +8,10 @@ import { useRouter } from 'next/navigation';
 
 interface TodoProps {
     todo: TodoModel
+    allTodos: TodoModel[]
 }
 
-const Todo: React.FC<TodoProps> = async ({todo}) => {
-    const todos = await GET();
+const Todo: React.FC<TodoProps> = ({todo, allTodos}) => {
     const [deleteSuccess, setDeleteSuccess] = useState(false);
     const [editSuccess, setEditSuccess] = useState(false);
     const router = useRouter();
@@ -43,7 +43,7 @@ const Todo: React.FC<TodoProps> = async ({todo}) => {
 
     const onSaveTodo = async (e: any) => {
         if (e.key === 'Enter') {
-            const isDuplicate = todos.some((todo) => todo.todo === todoText);
+            const isDuplicate = allTodos.some((todo) => todo.todo === todoText);
             if (isDuplicate) {
                 setError('Duplicate Todo!');
                 setTimeout(() => setError(''), 2000);

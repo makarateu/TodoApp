@@ -26,7 +26,7 @@ const TodoList: React.FC<TodoListProps> = ({todos})  =>  {
                 </thead>
                 <tbody>
                     {finalTodos.map(todo =>(
-                        <Todo key={todo.id} todo={todo} />
+                        <Todo key={todo.id} todo={todo} allTodos={finalTodos}/>
                     ))}
                 </tbody>
             </table>
